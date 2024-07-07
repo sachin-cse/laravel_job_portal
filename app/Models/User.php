@@ -28,6 +28,8 @@ class User extends Authenticatable
         'profile_photo_path'
     ];
 
+    protected $guarded = ['_token'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
