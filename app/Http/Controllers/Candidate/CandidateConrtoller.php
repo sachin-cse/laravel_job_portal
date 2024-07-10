@@ -78,11 +78,14 @@ class CandidateConrtoller extends Controller
                     $image->cover(150,150);
                     $image->toPng()->save(public_path('assets/candidate_profile/thumb_profile/'.$filename));
 
+                   $profileThumbimage = explode('.', $filename);
+
                     // delete old profile
                     \File::delete(public_path('assets/candidate_profile/'.\Auth::user()->profile_photo_path));
                     \File::delete(public_path('assets/candidate_profile/thumb_profile/'.\Auth::user()->profile_photo_path));
 
                     $this->user->where('id', \Auth::user()->id)->update(['profile_photo_path'=>$filename]);
+                    $this->user->where('id', \Auth::user()->id)->update(['profile_thumb_image'=>$profileThumbimage[0].'.png']);
                     return response()->json(
                     ['status'=>200, 'message'=>"profile photo updated successfully"]
                     );

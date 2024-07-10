@@ -10,7 +10,7 @@
             <div class="col">
                 <nav aria-label="breadcrumb" class=" rounded-3 p-3 mb-4">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
                         <li class="breadcrumb-item active">Account Settings</li>
                     </ol>
                 </nav>
@@ -21,7 +21,7 @@
                 <div class="card border-0 shadow mb-4 p-3">
                     <div class="s-body text-center mt-3">
                         
-                        <img src="{{\Auth::user()->profile_photo_path ? asset('assets/candidate_profile/thumb_profile/'.\Auth::user()->profile_photo_path):asset('assets/candidate_profile/profile_image.jpg')}}" alt="avatar"  class="rounded-circle img-fluid" style="width: 150px;">
+                        <img src="{{\Auth::user()->profile_photo_path ? asset('assets/candidate_profile/thumb_profile/'.\Auth::user()->profile_thumb_image):asset('assets/candidate_profile/profile_image.jpg')}}" alt="avatar"  class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 class="mt-3 pb-0">{{ucfirst(Auth::user()->name)}}</h5>
                         <p class="text-muted mb-1 fs-6">{{ucfirst(Auth::user()->designation)}}</p>
                         <div class="d-flex justify-content-center mb-2">

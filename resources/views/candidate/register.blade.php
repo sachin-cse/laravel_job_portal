@@ -39,12 +39,15 @@
                             <div class="mb-3">
                                 <label for="" class="mb-2">Confirm Password*</label>
                                 <input type="password" name="cpassword" id="cpassword" class="form-control" placeholder="Enter Confirm Password">
-                            </div> 
-                            <button class="btn btn-primary mt-2" type="submit">Register</button>
+                            </div>
+                            
+                            <div class="justify-content-between d-flex show_loader">
+                                <button class="btn btn-primary mt-2" type="submit">Register</button>
+                            </div>
                         </form>                    
                     </div>
                     <div class="mt-4 text-center">
-                        <p>Have an account? <a  href="login.html">Login</a></p>
+                        <p>Have an account? <a  href="{{route('login_view')}}">Login</a></p>
                     </div>
                 </div>
             </div>

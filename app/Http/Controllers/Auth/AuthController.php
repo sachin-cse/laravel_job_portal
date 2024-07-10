@@ -74,7 +74,7 @@ class AuthController extends Controller
                 $user = new User;
                 $user->fill($request->all());
                 if($user->saveOrFail()){
-                    return response()->json(['status'=> 201, 'message'=>'Registration successfully']);
+                    return response()->json(['status'=> 201, 'message'=>'Registration successfully', 'redirectUrl'=>route('login_view')]);
                 }
             } catch(Exception $e){
                 // dd($e);

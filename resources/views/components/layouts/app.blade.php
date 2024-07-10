@@ -75,7 +75,7 @@
 				  <input type="file" class="form-control" id="image"  name="image">
 			  </div>
 			  <div class="d-flex justify-content-end show_loader">
-				  <button type="submit" class="btn btn-primary mx-3">Update</button>
+				  <button type="submit" class="btn btn-primary mx-3 loading">Update</button>
 				  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			  </div>
 			  

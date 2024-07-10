@@ -19,12 +19,14 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             // $table->string('image');
-            $table->string('designation');
+            $table->string('designation')->nullable();
+            $table->string('company_name')->nullable();
             $table->string('mobile')->unique();
             $table->string('type');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('profile_thumb_image', 2048)->nullable();
             $table->timestamps();
         });
 

@@ -85,24 +85,24 @@ $(document).ready(function(){
             }
         },
         submitHandler: function(form) {
+            $('.show_loader').find('button').replaceWith('<button class="btn btn-primary mt-2" type="submit">Register<i class="fa fa-spinner fa-spin" style="font-size:24px"></i></button>');
             $.ajax({
                 url: form.action,
                 type: form.method,
                 data: $(form).serialize(),
                 success: function(response) {
                     console.log(response);
-                    if(response.status==201 && empty(response.flag)){
+                    if(response.status==201 && response.flag !== 'error'){
                         toastr.success(response.message);
                         setTimeout(function() {
-                            window.location.reload(true);
+                            window.location.href = response.redirectUrl;
                         }, 1000);
                     } else{
                         toastr.error(response.message);
                     }
                 },
                 complete:function(){
-                    $("#submitbtn").show();
-                    $("#loader").html('');
+                    $('.show_loader').find('button').replaceWith('<button class="btn btn-primary mt-2" type="submit">Register</button>');
                 }           
             });
         }
@@ -212,7 +212,7 @@ $(document).ready(function(){
         },
         submitHandler: function(form) {
             var formData = new FormData(form);
-            $('.show_loader').find('button').replaceWith('<button class="btn btn-primary mx-3" type="submit">Update <i class="fa fa-spinner fa-spin" style="font-size:24px"></i></button>');
+            $('.show_loader').find('.loading').replaceWith('<button class="btn btn-primary mx-3" type="submit">Update <i class="fa fa-spinner fa-spin" style="font-size:24px"></i></button>');
             $.ajax({
                 url: form.action,
                 type: form.method,
@@ -233,7 +233,7 @@ $(document).ready(function(){
                     }
                 },
                 complete:function(){
-                    $('.show_loader').find('button').replaceWith('<button class="btn btn-primary mx-3" type="submit">Update</button>');
+                    $('.show_loader').find('.loading').replaceWith('<button class="btn btn-primary mx-3" type="submit">Update</button>');
                 }           
             });
         }
