@@ -1,7 +1,7 @@
 <x-layouts.app>
 
 @slot('title')
-    Job Portal | {{ucfirst(Auth::user()->type)}} Dashboard
+    Job Portal | My Account
 @endslot
 
 <section class="section-5 bg-2">
@@ -10,50 +10,18 @@
             <div class="col">
                 <nav aria-label="breadcrumb" class=" rounded-3 p-3 mb-4">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{url('/')}}">Home</a></li>
                         <li class="breadcrumb-item active">Account Settings</li>
                     </ol>
                 </nav>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-3">
-                <div class="card border-0 shadow mb-4 p-3">
-                    <div class="s-body text-center mt-3">
-                        
-                        <img src="{{\Auth::user()->profile_photo_path ? asset('assets/candidate_profile/thumb_profile/'.\Auth::user()->profile_thumb_image):asset('assets/candidate_profile/profile_image.jpg')}}" alt="avatar"  class="rounded-circle img-fluid" style="width: 150px;">
-                        <h5 class="mt-3 pb-0">{{ucfirst(Auth::user()->name)}}</h5>
-                        <p class="text-muted mb-1 fs-6">{{ucfirst(Auth::user()->designation)}}</p>
-                        <div class="d-flex justify-content-center mb-2">
-                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" type="button" class="btn btn-primary">Change Profile Picture</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card account-nav border-0 shadow mb-4 mb-lg-0">
-                    <div class="card-body p-0">
-                        <ul class="list-group list-group-flush ">
-                            <li class="list-group-item d-flex justify-content-between p-3">
-                                <a href="account.html">Account Settings</a>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="post-job.html">Post a Job</a>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="my-jobs.html">My Jobs</a>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="job-applied.html">Jobs Applied</a>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="saved-jobs.html">Saved Jobs</a>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="javascript:void(0);" data-url="{{route('handle_logout_request')}}" class="logoutUser">Logout</a>
-                            </li>                                                                                                               
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
+            {{-- profile section --}}
+            @include('candidate.my_profile')
+            {{-- end profile section --}}
+            
             <div class="col-lg-9">
                 <div class="card border-0 shadow mb-4">
                     <div class="card-body  p-4">

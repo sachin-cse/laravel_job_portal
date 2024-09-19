@@ -16,6 +16,11 @@
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
 </head>
 <body data-instant-intensity="mousedown">
+	<div id="overlay">
+		<div class="cv-spinner">
+		  <span class="spinner"></span>
+		</div>
+	</div>
 <header>
 	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow py-3">
 		<div class="container">
@@ -26,14 +31,27 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-0 ms-sm-0 me-auto mb-2 mb-lg-0 ms-lg-4">
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="index.html">Home</a>
+						<a class="nav-link" aria-current="page" href="{{url('/')}}">Home</a>
 					</li>	
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="jobs.html">Find Jobs</a>
-					</li>										
-				</ul>				
+						<a class="nav-link" aria-current="page" href="javascript:void(0);">Find Jobs</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link" aria-current="page" href="{{route('user_dashboard')}}">My Profile</a>
+					</li>
+				</ul>
+				
+				@if(!\Auth::check())				
 				<a class="btn btn-outline-primary me-2" href="{{route('login_view')}}" type="submit">Login</a>
-				<a class="btn btn-primary" href="post-job.html" type="submit">Post a Job</a>
+				@else
+				<a class="btn btn-outline-primary me-2" href="javascript:void(0);">Hi, {{\Auth::user()->name}}</a>
+				@endif
+
+				@php
+				$url = !\Auth::check() ? route('login_view'):((\Auth::user()->type??'') == 'candidate' ? route('job_apply'):'javascript:void(0);')
+				@endphp
+				<a class="btn btn-primary" href="{{$url}}" type="submit">{{(\Auth::user()->type??'') == 'candidate' ? 'Apply Job':'Post a Job'}}</a>
 			</div>
 		</div>
 	</nav>
@@ -98,6 +116,7 @@
 <script src="{{asset('assets/js/lazyload.17.6.0.min.js')}}"></script>
 <script src="{{asset('assets/js/slick.min.js')}}"></script>
 <script src="{{asset('assets/js/lightbox.min.js')}}"></script>
+<script src="{{asset('assets/js/common.js')}}"></script>
 <script src="{{asset('assets/js/custom.js')}}"></script>
 <script>
 $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]'). attr('content') } });

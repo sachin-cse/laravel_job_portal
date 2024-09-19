@@ -1,11 +1,11 @@
 <x-layouts.app>
 
     @slot('title')
-        CareerVibe | Find Best Jobs
+        CareerVibe | {{ucfirst(Auth::user()->type??'')}} Dashboard
     @endslot
 
     @slot('slot')
-        <section class="section-0 lazy d-flex bg-image-style dark align-items-center "   class="" data-bg="{{asset('assets/images/banner5.jpg')}}">
+        <section class="section-0 lazy d-flex bg-image-style dark align-items-center" class="" data-bg="{{asset('assets/images/banner5.jpg')}}">
             <div class="container">
                 <div class="row">
                     <div class="col-12 col-xl-8">

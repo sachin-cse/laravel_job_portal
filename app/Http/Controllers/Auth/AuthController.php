@@ -44,6 +44,20 @@ class AuthController extends Controller
                         'cpassword'=>'required|same:password'
                     ];
                     break;
+
+                    case 'employee':
+                        $rules = [
+                            'name'=>'required|regex:/^[a-zA-Z ]+$/u',
+                            'email'=>'required|email|unique:users,email',
+                            'username'=>'required|regex:/^(?=.*[0-9])[a-zA-Z0-9@]+$/u|unique:users,username',
+                            'mobile'=>'required|numeric|digits_between:10,15|unique:users,mobile',
+                            'designation'=>'required',
+                            'company_name' => 'required',
+                            'password'=>'required|max:8',
+                            'cpassword'=>'required|same:password'
+                        ];
+                        break;
+
             }
 
             try{
@@ -61,6 +75,7 @@ class AuthController extends Controller
                     'username.regex'=>'Username must be alphanumeric',
                     'username.unique'=>'This username has already taken',
                     'designation.required'=>'Please enter your designation',
+                    'company_name.required'=>'Please enter your company name',
                     'password.required'=>'Please enter your password',
                     'password.max'=>'Password maximum 8 characters long',
                     'cpassword.required'=>'Please enter your confirm  password',

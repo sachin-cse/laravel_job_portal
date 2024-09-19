@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Candidate;
 
 use Exception;
+use TypeError;
 use App\Models\User;
+use App\Models\JobApply;
+use App\Models\SaveJobs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -13,8 +16,10 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class CandidateConrtoller extends Controller
 {
-    public function __construct(User $user){
+    public function __construct(User $user, JobApply $JobApply, SaveJobs $SaveJobs){
         $this->user = $user;
+        $this->jobApply = $JobApply;
+        $this->SaveJobs = $SaveJobs;
     }
     //profile update request
     public function handleUpdaterequest(Request $request, $action_type){
@@ -70,19 +75,19 @@ class CandidateConrtoller extends Controller
                     $file = $request->file('image');
                     $profileName = $file->getClientOriginalName();
                     $filename = \Auth::user()->id.'_'.$profileName;
-                    $file->move('assets/candidate_profile/', $filename);
+                    $file->move('assets/profile_image/', $filename);
 
                     // create a thumbnail image
                     $manager = new ImageManager(Driver::class);
-                    $image = $manager->read(public_path('assets/candidate_profile/'.$filename));
+                    $image = $manager->read(public_path('assets/profile_image/'.$filename));
                     $image->cover(150,150);
-                    $image->toPng()->save(public_path('assets/candidate_profile/thumb_profile/'.$filename));
+                    $image->toPng()->save(public_path('assets/profile_image/thumb_profile/'.$filename));
 
                    $profileThumbimage = explode('.', $filename);
 
                     // delete old profile
-                    \File::delete(public_path('assets/candidate_profile/'.\Auth::user()->profile_photo_path));
-                    \File::delete(public_path('assets/candidate_profile/thumb_profile/'.\Auth::user()->profile_photo_path));
+                    \File::delete(public_path('assets/profile_image/'.\Auth::user()->profile_photo_path));
+                    \File::delete(public_path('assets/profile_image/thumb_profile/'.\Auth::user()->profile_photo_path));
 
                     $this->user->where('id', \Auth::user()->id)->update(['profile_photo_path'=>$filename]);
                     $this->user->where('id', \Auth::user()->id)->update(['profile_thumb_image'=>$profileThumbimage[0].'.png']);
@@ -118,5 +123,77 @@ class CandidateConrtoller extends Controller
                 );
             }
         }
+    }
+
+    // apply job
+    public function jobApply(Request $request){
+        $getJobsData = $this->jobApply->with('savedJobs')->get();
+        return view('job_apply',['jobs'=>$getJobsData??'']);
+    }
+
+    // saved job
+    public function savedJob(Request $request){
+        if(\Auth::check()){
+
+            // check job save or not
+            $checkExist = $this->SaveJobs->where(['job_id'=>$request->id])->exists();
+
+            if($checkExist){
+                return response()->json(['status'=>'info', 'message'=>'This Job already in your favorites list']);
+            }
+            //get job details
+            $getDetails = $this->jobApply->where(['id'=> $request->id, 'job_status'=>1])->first();
+
+            $data = [
+                'job_id'=>$request->id,
+                'job_name'=>$getDetails->job_title,
+                'job_description'=>$getDetails->job_short_description,
+                'user_id'=>\Auth::user()->id,
+                'flag'=>'1'
+            ];
+             // insert data in saved job
+            $saveWishdata = $this->SaveJobs;
+            $saveWishdata->fill($data);
+
+            try{
+                if($saveWishdata->save()){
+                    return response()->json(['status'=>'200', 'message'=>'Job saved successfully']);
+                }
+            }catch(Exception $e){
+                    return response()->json(['status'=>'404', 'message'=>$e->getMessage()]);
+            }
+
+
+        }else{
+            return response()->json(['status'=>'403', 'message'=>'Please login first']);
+        }
+    }
+
+    // my saved jobs
+    public function MySavedJobs(Request $request){
+        $savedJobs = $this->SaveJobs->with('jobs')->get();
+        return view('candidate.my_saved_jobs', compact('savedJobs'));
+    }
+
+    // handle saved jobs request
+    public function handleMySavedJobRequest(Request $request, $action_type){
+       if($request->method() && $request->ajax()){
+        $data = $request->all();
+            if($action_type == 'delete'){
+                try{
+
+                    if($data['id'] > 0){
+                        // $delete_save_jobs = $this->SaveJobs->find($data['id']);
+                        // $delete_save_jobs->delete();
+                        return sendAjaxRequest($status=null, $msg=null, $redirect=null);
+                    }else{
+                        throw new Exception('id does not exist');
+                    }
+                }
+                catch(Exception $e){
+                    dd($e);
+                }
+            }
+       }
     }
 }

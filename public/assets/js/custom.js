@@ -44,6 +44,9 @@ $(document).ready(function(){
             designation:{
                 required:true,
             },
+            company_name:{
+                required:$('#hidden_user').val() == 'employee'?true:false 
+            },
             password:{
                 required:true,
                 minlength: 8,
@@ -74,6 +77,9 @@ $(document).ready(function(){
             },
             designation:{
                 required:"Please enter your designation",
+            },
+            company_name:{
+                required:"Please enter your company name",
             },
             password:{
                 required:"Please enter your password",
@@ -212,7 +218,6 @@ $(document).ready(function(){
         },
         submitHandler: function(form) {
             var formData = new FormData(form);
-            $('.show_loader').find('.loading').replaceWith('<button class="btn btn-primary mx-3" type="submit">Update <i class="fa fa-spinner fa-spin" style="font-size:24px"></i></button>');
             $.ajax({
                 url: form.action,
                 type: form.method,
@@ -221,15 +226,20 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 data: formData,
+                beforeSend:function(){
+                    $('.show_loader').find('.loading').replaceWith('<button class="btn btn-primary mx-3" type="submit">Update<i class="fa fa-spinner fa-spin" style="font-size:24px"></i></button>');
+                },
                 success: function(response) {
                     // alert(JSON.stringify(response));
                     if((response.status==200) && response.flag !== 'error'){
                         toastr.success(response.message);
                         setTimeout(function(){
                             window.location.reload(true);
+                            $('.show_loader').find('.loading').replaceWith('<button class="btn btn-primary mx-3 fff" type="submit">Update</button>');
                         },1000)
                     } else {
                         toastr.error(response.message);
+                        $('.show_loader').find('.loading').replaceWith('<button class="btn btn-primary mx-3 ggg" type="submit">Update</button>');
                     }
                 },
                 complete:function(){
@@ -348,6 +358,45 @@ $(document).ready(function(){
             });
         }
     });
+
+    // add to favorite job
+    $(document).on('click','.add-to-favorite i',function(){
+        if($(this).hasClass('fa fa-heart-o') || $(this).hasClass('fa fa-heart')){
+            var data_id = $(this).attr('data-id');
+            var data_url = $(this).attr('data-url');
+            var parentId = $(this).parent().attr('id');
+            $.ajax({
+                type: 'POST',
+                url: data_url,
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                dataType: 'json',
+                data:{id:data_id},
+                beforeSend: function(){
+                    $("#overlay").fadeIn(300);　
+                },
+                success:function(response){
+                    if(response.status == 200){
+                        $('#'+parentId).addClass('check').find('i').removeClass('fa-heart-o').addClass('fa-heart');
+                        toastr.success(response.message);
+                    }else if(response.status == 403){
+                        toastr.error(response.message);
+                    }else if(response.status == 'info'){
+                        toastr.info(response.message);
+                    }else{
+                        toastr.error(response.message);
+                    }
+                },
+
+                complete: function(){
+                    setTimeout(function(){
+                        $("#overlay").fadeOut(300);
+                    },150);
+                },
+            });
+        }
+    });
+
+    // delete by id using ajax
 });
 
 
