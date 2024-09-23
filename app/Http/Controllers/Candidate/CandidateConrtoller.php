@@ -183,15 +183,15 @@ class CandidateConrtoller extends Controller
                 try{
 
                     if($data['id'] > 0){
-                        // $delete_save_jobs = $this->SaveJobs->find($data['id']);
-                        // $delete_save_jobs->delete();
-                        return sendAjaxRequest($status=null, $msg=null, $redirect=null);
+                        $delete_save_jobs = $this->SaveJobs->find($data['id']);
+                        $delete_save_jobs->delete();
+                        return sendAjaxRequest('success', 'Data deleted successfully');
                     }else{
                         throw new Exception('id does not exist');
                     }
                 }
                 catch(Exception $e){
-                    dd($e);
+                    return sendAjaxRequest('error', $e->getMessage());
                 }
             }
        }

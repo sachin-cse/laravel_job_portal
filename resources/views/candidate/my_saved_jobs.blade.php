@@ -68,7 +68,7 @@
                                                             </a>
                                                             <ul class="dropdown-menu dropdown-menu-end">
                                                                 <li><a class="dropdown-item" href="javascript:void(0)"> <i class="fa fa-eye" aria-hidden="true"></i> View</a></li>
-                                                                <li><a class="dropdown-item send_ajax_response" data-url="{{route('handle_my_saved_jobs',['action_type'=>'delete'])}}" data-id="{{$value->id}}" href="javascript:void(0)"><i class="fa fa-trash" aria-hidden="true"></i> Remove</a></li>
+                                                                <li><a class="dropdown-item send_ajax_response" data-url="{{route('handle_my_saved_jobs',['action_type'=>'delete'])}}" data-id="{{$value->id}}" href="javascript:void(0)" data-text="Do You Want to remove this" data-title=""><i class="fa fa-trash" aria-hidden="true"></i> Remove</a></li>
                                                             </ul>
                                                         </div>
                                                     </td>
