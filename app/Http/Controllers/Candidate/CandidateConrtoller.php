@@ -178,7 +178,8 @@ class CandidateConrtoller extends Controller
     // handle saved jobs request
     public function handleMySavedJobRequest(Request $request, $action_type){
        if($request->method() && $request->ajax()){
-        $data = $request->all();
+            $data = $request->all();
+            // dd($data);
             if($action_type == 'delete'){
                 try{
 
@@ -193,6 +194,11 @@ class CandidateConrtoller extends Controller
                 catch(Exception $e){
                     return sendAjaxRequest('error', $e->getMessage());
                 }
+            }
+
+            if($action_type == 'view-details'){
+                $get_details = $this->SaveJobs->with('jobs')->where(['id'=>$data['id']])->first();
+                return sendAjaxRequest($get_details);
             }
        }
     }
