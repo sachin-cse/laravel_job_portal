@@ -3,6 +3,13 @@
 @slot('title')
     CareerVibe | login
 @endslot
+
+{{-- session messages --}}
+@foreach(array_keys(\Session::all()) as $key)
+    @if(in_array($key,['error','success','warning','info']))
+    <input type="hidden" value = "{{\Session::get($key??'')}}" id="session_messages" data-msg-type="{{$key??''}}">
+    @endif
+@endforeach
     <section class="section-5">
         <div class="container my-5">
             <div class="py-lg-2">&nbsp;</div>
@@ -22,7 +29,7 @@
                             </div> 
                             <div class="justify-content-between d-flex show_loader">
                             <button class="btn btn-primary mt-2" type="submit">Login</button>
-                                <a href="javascript:void(0);" class="mt-3">Forgot Password?</a>
+                                <a href="{{route('forgot_password')}}" class="mt-3">Forgot Password?</a>
                             </div>
                         </form>                    
                     </div>

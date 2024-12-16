@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,10 @@ class AuthMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if(!Auth::check()){
+            Session::flash('info', 'Please login first'); 
             return redirect()->route('login_view');
         }
+        Session::forget('info');
         return $next($request);
     }
 }

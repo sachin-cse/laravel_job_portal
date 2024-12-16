@@ -33,6 +33,6 @@ class JobApply extends Model
     ];
 
     public function savedJobs(){
-        return $this->belongsTo(SaveJobs::class,'job_id', 'id');
+        return $this->hasMany(SaveJobs::class,'job_id', 'id');
     }
 }

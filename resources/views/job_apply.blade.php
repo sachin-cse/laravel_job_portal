@@ -90,7 +90,6 @@
                     <div class="job_listing_area">                    
                         <div class="job_lists jobListRow">
                             <div class="row">
-
                                 @if($jobs->count() > 0)
                                     @foreach($jobs as $value)
                                         <div class="col-md-4">
@@ -98,14 +97,23 @@
                                                 <div class="card-body">
                                                     <div class="title-wrap">
                                                         <h3 class="border-0 fs-5 pb-2 mb-0">{{$value->job_title??''}}</h3>
-                                                            @if(($value->savedJobs->flag??0) == '1')
-                                                            <span class="add-to-favorite check"><i class="fa fa-heart" data-id="{{$value->id}}" data-url="{{route('saved_job')}}"></i>
-                                                            </span>
-                                                            @else
-                                                            <span class="add-to-favorite" id="savejob_{{$value->id}}">
-                                                                <i class="fa fa-heart-o" data-id="{{$value->id}}" data-url="{{route('saved_job')}}"></i>
-                                                            </span>
-                                                            @endif
+
+                                                        @if($value->savedJobs->count() > 0)
+                                                            @foreach($value->savedJobs as $getFlag)
+                                                                @if(($getFlag->flag??0) == '1' && \Auth::user()->id == ($getFlag->user_id??0))
+                                                                    <span class="add-to-favorite check"><i class="fa fa-heart" data-id="{{$value->id}}" data-url="{{route('saved_job')}}"></i>
+                                                                    </span>
+                                                                    @else
+                                                                    <span class="add-to-favorite" id="savejob_{{$value->id}}">
+                                                                        <i class="fa fa-heart-o" data-id="{{$value->id}}" data-url="{{route('saved_job')}}"></i>
+                                                                    </span>
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                                <span class="add-to-favorite" id="savejob_{{$value->id}}">
+                                                                    <i class="fa fa-heart-o" data-id="{{$value->id}}" data-url="{{route('saved_job')}}"></i>
+                                                                </span>
+                                                        @endif
                                                     </div>
                                                     <div class="card-content">
                                                         <p>{{$value->job_short_description??''}}</p>
@@ -126,8 +134,8 @@
 
                                                         <div class="d-grid mt-3">
                                                             <div class="d-flex justify-content-between">
-                                                                <a href="#" class="btn btn-success btn-lg">Apply Job</a>
-                                                                <a href="job-detail.html" class="btn btn-primary btn-lg">Job Details</a>
+                                                                <a href="javascript:void(0);" class="btn btn-success btn-lg">Apply Job</a>
+                                                                <a href="{{route('job_details',$value->job_slug)}}" class="btn btn-primary btn-lg">Job Details</a>
                                                             </div>
                                                         </div>
                                                     </div>

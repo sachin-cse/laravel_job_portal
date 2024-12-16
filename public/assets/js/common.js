@@ -1,4 +1,21 @@
 $(document).ready(function(){
+    
+    // get session variable
+    if($('#session_messages').val() != ''){
+
+        if($('#session_messages').attr('data-msg-type') == 'error'){
+            toastr.error($('#session_messages').val());
+        }else if($('#session_messages').attr('data-msg-type') == 'success'){
+            toastr.success($('#session_messages').val());
+        }else if($('#session_messages').attr('data-msg-type') == 'warning'){
+            toastr.warning($('#session_messages').val());
+        }else if($('#session_messages').attr('data-msg-type') == 'info'){
+            toastr.info($('#session_messages').val());
+        }
+
+    }
+    
+    // end session message
     $(document).on('click', '.delete_details', function(){
         var dataId = $(this).data('id');
         var dataUrl = $(this).data('url');
@@ -88,5 +105,62 @@ $(document).ready(function(){
                 }
             });
         }
+    });
+
+    // forgot password
+    $(document).on('click','.forgot-password',function(){
+        // get dynamic form id
+        var getformId = $(this).parents().find('form').attr('id');
+        $("#"+getformId).validationEngine({
+            onValidationComplete: function (form, valid) {
+                if (valid) {
+                    var email = $('#email').val(); //get users email    
+                    var dataUrl = $(this).attr('data-url');
+                    if(email != ''){
+                        $.ajax({
+                            url: dataUrl,
+                            type: 'POST',
+                            dataType: 'json',
+                            data:{email:email},
+                            success:function(response){
+                                if(response.status == 'success'){
+                                    toastr.success(response.msg);
+                                }else{
+                                    toastr.error(response.msg);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    });
+
+    // reset password
+    $(document).on('click','.reset-password',function(){
+
+        var new_password = $('#new_password').val();  //get new password
+        var confirm_password = $('#confirm_password').val();
+
+
+        var dataUrl = $(this).attr('data-url');
+        
+            $.ajax({
+                url: dataUrl,
+                type: 'POST',
+                dataType: 'json',
+                data:{new_password:new_password,confirm_password:confirm_password},
+                success:function(response){
+                    if(response.status == 'success'){
+                        toastr.success(response.msg);
+                        setTimeout(function(){
+                            window.location.href = response.redirectUrl
+                        },1000)
+                    }else{
+                        toastr.error(response.msg);
+                    }
+                }
+            });
+        
     });
 });

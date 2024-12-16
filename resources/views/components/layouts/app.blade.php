@@ -9,6 +9,7 @@
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="pinterest" content="nopin" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	<link rel="stylesheet" href="{{asset('assets/plugins/validate_engine/css/validationEngine.jquery.css')}}" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{{asset('assets/css/style.css')}}" />
 
     <link rel="stylesheet" href={{asset('assets/css/toastr.min.css')}}>
@@ -34,13 +35,14 @@
 						<a class="nav-link" aria-current="page" href="{{url('/')}}">Home</a>
 					</li>	
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="javascript:void(0);">Find Jobs</a>
+						<a class="nav-link" aria-current="page" href="{{route('job_apply','find-jobs')}}">Find Jobs</a>
 					</li>
 					
 					<li class="nav-item">
 						<a class="nav-link" aria-current="page" href="{{route('user_dashboard')}}">My Profile</a>
 					</li>
 				</ul>
+
 				
 				@if(!\Auth::check())				
 				<a class="btn btn-outline-primary me-2" href="{{route('login_view')}}" type="submit">Login</a>
@@ -49,7 +51,7 @@
 				@endif
 
 				@php
-				$url = !\Auth::check() ? route('login_view'):((\Auth::user()->type??'') == 'candidate' ? route('job_apply'):'javascript:void(0);')
+				$url = !\Auth::check() ? route('login_view'):((\Auth::user()->type??'') == 'candidate' ? route('job_apply','job-apply'):'javascript:void(0);')
 				@endphp
 				<a class="btn btn-primary" href="{{$url}}" type="submit">{{(\Auth::user()->type??'') == 'candidate' ? 'Apply Job':'Post a Job'}}</a>
 			</div>
@@ -117,6 +119,8 @@
 <script src="{{asset('assets/js/slick.min.js')}}"></script>
 <script src="{{asset('assets/js/lightbox.min.js')}}"></script>
 <script src="{{asset('assets/js/sweetAlert.js')}}"></script>
+<script src="{{asset('assets/plugins/validate_engine/js/jquery.validationEngine-en.js')}}" type="text/javascript" charset="utf-8"></script>
+<script src="{{asset('assets/plugins/validate_engine/js/jquery.validationEngine.js')}}" type="text/javascript" charset="utf-8"></script>
 <script src="{{asset('assets/js/common.js')}}"></script>
 <script src="{{asset('assets/js/custom.js')}}"></script>
 <script>

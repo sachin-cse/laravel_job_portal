@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
+use Mail;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Mail\ForgotPasswordMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -89,7 +92,7 @@ class AuthController extends Controller
                 $user = new User;
                 $user->fill($request->all());
                 if($user->saveOrFail()){
-                    return response()->json(['status'=> 201, 'message'=>'Registration successfully', 'redirectUrl'=>route('login_view')]);
+                    return response()->json(['status'=> 201, 'message'=>__('messages.register.success'), 'redirectUrl'=>route('login_view')]);
                 }
             } catch(Exception $e){
                 // dd($e);
@@ -115,18 +118,18 @@ class AuthController extends Controller
                 throw new \Exception($validator->errors()->first());
             }
             // $credential && Hash::check($request->get('password'), $credential->password) && Auth::loginUsingId($credential->id)
-            $credential = $this->user->where('email', $request->emailorusername)->orWhere('username',$request->emailorusername)->first();
+            $credential = $this->user->where('email', $request->emailorusername)->orWhere('username',$request->emailorusername);
             if($credential && Hash::check($request->get('password'), $credential->password) && Auth::loginUsingId($credential->id)){
                 return response()->json([
                     'status'=>200,
-                    'message'=>'You have logged in successfully',
+                    'message'=>__('messages.login.success'),
                     'redirectUrl'=>route('user_dashboard')
                 ]);
             }else{
                 return response()->json([
                     'status'=>200,
                     'flag'=>'error',
-                    'message'=>'Invalid credentials',
+                    'message'=>__('messages.login.error'),
                 ]);
             }
         }catch(\Exception $e){
@@ -138,15 +141,13 @@ class AuthController extends Controller
         }
     }
 
-
-
     // logout user
     public function handleLogoutrequest(Request $request){
         try{
             Auth::logout();
                 return response()->json([
                     'status' => 200,
-                    'message' => 'User logout successfully',
+                    'message' => __('messages.logout.success'),
                     'returnUrl'=>route('login_view')
                 ]);
             
@@ -157,6 +158,111 @@ class AuthController extends Controller
                 'flag'=>'error',
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+
+    // handle forgot password request
+    public function forgotPasswordView(Request $request){
+        return view('frontend.forgot_password');
+    }
+
+    // handle change password request
+    public function handleForgotPassword(Request $request){
+        if($request->ajax() && $request->method() == 'POST'){
+            $data = $request->all(); //get data from request
+
+            // check email registered or not
+            try{
+                $checkEmailExistance = $this->user->where(['email'=>$data['email']??''])->count();
+
+                if($checkEmailExistance <= 0){
+                    return sendAjaxRequest('error', __('messages.forgotpassword.emailExist'));
+                }else{
+
+                    // default time set
+                    date_default_timezone_set('Asia/Kolkata');
+
+                    // generate token
+                    $token = (bin2hex(random_bytes(5)));
+                    Mail::to($data['email'])->send(new ForgotPasswordMail([
+                       'token' => $token]));
+
+                    \DB::table('password_reset_tokens')->insert(
+                        ['email' => $data['email'], 'token' => $token, 'generated_at'=>date("Y-m-d h:i:s")]
+                    );
+
+                    return sendAjaxRequest('success', 'Reset Link send your registered email address', route('login_view'));
+                }
+            }
+            catch(Exception $e){
+                return sendAjaxRequest('error', $e->getMessage());
+            }
+        }
+    }
+
+    // reset link view
+    public function resetLinkView(Request $request, $token){
+        return view('frontend.reset_password',compact('token'));
+    }
+
+    // handle reset password 
+    public function handleResetPassword(Request $request, $token){
+        
+        $rules = [
+            'new_password'=>'required|min:8|max:16',
+            'confirm_password' => 'required|same:new_password',
+        ];
+
+        $validate = Validator::make($request->all(), $rules, [
+            'new_password.required'=>'Please enter your new password',
+            'new_password.min'=>'Password must be minimum 8 character long',
+            'new_password.max'=>'Password must be maximum 16 character long',
+        ]);
+
+
+        if($validate->fails()){
+            return sendAjaxRequest('error',$validate->errors()->first());
+        }
+
+        try{
+            // check token exist or not
+            if(!empty($token)){
+                $checkToken = DB::table('password_reset_tokens')->where(['token'=>$token])->exists();
+                if($checkToken){
+
+
+                    // default time set
+                    date_default_timezone_set('Asia/Kolkata');
+
+                    $getToken = DB::table('password_reset_tokens')->where(['token'=>$token])->first();
+
+                    // check token time
+                    $getTime = date('h:i:s', strtotime($getToken->generated_at.'+2 hours'));
+
+                    $getCurrentTime = date('h:i:s', time());
+
+                    if($getTime >= $getCurrentTime){
+                        // reset password
+                        $this->user->where(['email'=>$getToken->email??''])->update([
+                            'password'=>Hash::make($request->new_password)
+                        ]);
+
+                        // reset password token blank 
+                        DB::table('password_reset_tokens')->where(['token'=>$token])->update([
+                            'token'=>NULL,
+                        ]);
+
+                        return sendAjaxRequest('success', 'Password reset successfully', route('login_view'));
+                    }else{
+                        return sendAjaxRequest('error', 'Reset link has been expired');
+                    }
+
+                }else{
+                    return sendAjaxRequest('error', 'Token does not exist');
+                }
+            }
+        }catch(Exception $e){
+            return sendAjaxRequest('error', $e->getMessage());
         }
     }
 }

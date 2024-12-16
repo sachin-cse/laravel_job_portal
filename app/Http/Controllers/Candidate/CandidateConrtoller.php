@@ -139,7 +139,7 @@ class CandidateConrtoller extends Controller
             $checkExist = $this->SaveJobs->where(['job_id'=>$request->id])->exists();
 
             if($checkExist){
-                return response()->json(['status'=>'info', 'message'=>'This Job already in your favorites list']);
+                return response()->json(['status'=>'info', 'message'=>__('messages.savedjob.alreadyexist')]);
             }
             //get job details
             $getDetails = $this->jobApply->where(['id'=> $request->id, 'job_status'=>1])->first();
@@ -157,7 +157,7 @@ class CandidateConrtoller extends Controller
 
             try{
                 if($saveWishdata->save()){
-                    return response()->json(['status'=>'200', 'message'=>'Job saved successfully']);
+                    return response()->json(['status'=>'200', 'message'=>__('messages.savedjob.save')]);
                 }
             }catch(Exception $e){
                     return response()->json(['status'=>'404', 'message'=>$e->getMessage()]);
@@ -165,7 +165,7 @@ class CandidateConrtoller extends Controller
 
 
         }else{
-            return response()->json(['status'=>'403', 'message'=>'Please login first']);
+            return response()->json(['status'=>'403', 'message'=>__('messages.savedjob.login')]);
         }
     }
 
@@ -186,7 +186,7 @@ class CandidateConrtoller extends Controller
                     if($data['id'] > 0){
                         $delete_save_jobs = $this->SaveJobs->find($data['id']);
                         $delete_save_jobs->delete();
-                        return sendAjaxRequest('success', 'Data deleted successfully');
+                        return sendAjaxRequest('success', __('messages.savedjob.delete'));
                     }else{
                         throw new Exception('id does not exist');
                     }
