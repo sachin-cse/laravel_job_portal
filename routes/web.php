@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Job\JobdetailsController;
+use App\Http\Controllers\Candidate\SearchController;
 use App\Http\Controllers\Candidate\CandidateConrtoller;
 
 // Route::get('/', function () {
@@ -32,5 +33,9 @@ Route::group(['prefix'=>'job-portal', 'middleware'=>['auth']], function(){
 
     // job details
     Route::get('/job-details/{job_type}', [JobdetailsController::class, 'jobDetails'])->name('job_details');
+   
     Route::get('/{page}', [CandidateConrtoller::class, 'jobApply'])->name('job_apply');
+
+    // handle search request
+    Route::post('/find-jobs/filter/{order}', [SearchController::class, 'handleSearchRequest'])->name('handle_search_request');
 });

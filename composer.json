@@ -28,7 +28,8 @@
         },
 
         "files": [
-            "app/Helper/AppHelper.php"
+            "app/Helper/AppHelper.php",
+            "app/Helper/ModelFactory.php"
         ]
     },
     "autoload-dev": {

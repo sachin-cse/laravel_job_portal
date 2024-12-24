@@ -12,9 +12,9 @@
                 </div>
                 <div class="col-6 col-md-2">
                     <div class="align-end">
-                        <select name="sort" id="sort" class="form-control">
-                            <option value="">Latest</option>
-                            <option value="">Oldest</option>
+                        <select name="sort" id="sort" class="form-control handle_search_request" data-url="{{route('handle_search_request','')}}">
+                            <option value="desc">Latest</option>
+                            <option value="asc">Oldest</option>
                         </select>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                 <div class="col-md-8 col-lg-9 ">
                     <div class="job_listing_area">                    
                         <div class="job_lists jobListRow">
-                            <div class="row">
+                            <div class="row" id="job_list_view">
                                 @if($jobs->count() > 0)
                                     @foreach($jobs as $value)
                                         <div class="col-md-4">

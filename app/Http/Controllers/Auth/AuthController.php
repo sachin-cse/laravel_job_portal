@@ -118,7 +118,7 @@ class AuthController extends Controller
                 throw new \Exception($validator->errors()->first());
             }
             // $credential && Hash::check($request->get('password'), $credential->password) && Auth::loginUsingId($credential->id)
-            $credential = $this->user->where('email', $request->emailorusername)->orWhere('username',$request->emailorusername);
+            $credential = $this->user->where('email', $request->emailorusername)->orWhere('username',$request->emailorusername)->first();
             if($credential && Hash::check($request->get('password'), $credential->password) && Auth::loginUsingId($credential->id)){
                 return response()->json([
                     'status'=>200,

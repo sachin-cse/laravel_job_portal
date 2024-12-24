@@ -163,4 +163,25 @@ $(document).ready(function(){
             });
         
     });
+
+    // handle search request
+    $(document).on('change', '.handle_search_request',function(){
+        var search_val = $(this).val();
+
+        var dataUrl = $(this).attr('data-url');
+
+        var setUrl = dataUrl + '/' + search_val;
+
+        if(search_val != ''){
+            $.ajax({
+                url:setUrl,
+                type:'POST',
+                dataType:'json',
+                data:{order:search_val},
+                success:function(data){
+                    console.log(data.html);
+                }
+            });
+        }
+    });
 });
