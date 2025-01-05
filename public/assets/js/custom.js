@@ -396,7 +396,6 @@ $(document).ready(function(){
         }
     });
 
-    // delete by id using ajax
 });
 
 

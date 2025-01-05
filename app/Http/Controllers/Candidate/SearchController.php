@@ -10,15 +10,16 @@ class SearchController extends Controller
 {
     //handle search request
     public function handleSearchRequest(Request $request){
+
         if($request->ajax() && $request->method() == 'POST'){
             // import model
             $jobApply = ModelFactory::getModels('JobApply');
 
-            $jobs = $jobApply->with('savedJobs')->get();
+            $jobs = $jobApply->with('savedJobs')->orderBy('job_created_at',$request->order)->get();
 
-            $returnHTML = view('job_apply',compact('jobs'))->render();// or method that you prefere to return data + RENDER is the key here
-            
-            return response()->json( array('success' => true, 'html'=>$returnHTML) );
+            $returnHTML = view('filter_jobs.job_apply_filter',compact('jobs'))->render();
+
+            return sendAjaxRequest('success',null ,null,$returnHTML);
         }
     }
 }

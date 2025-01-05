@@ -166,6 +166,7 @@ $(document).ready(function(){
 
     // handle search request
     $(document).on('change', '.handle_search_request',function(){
+
         var search_val = $(this).val();
 
         var dataUrl = $(this).attr('data-url');
@@ -178,10 +179,26 @@ $(document).ready(function(){
                 type:'POST',
                 dataType:'json',
                 data:{order:search_val},
-                success:function(data){
-                    console.log(data.html);
+                success:function(response){
+                    // console.log(response);
+                    $('#job_list_view').html(response.data);
                 }
             });
         }
+    });
+
+    // fa fa-eye-slash 
+
+
+    // show and hide password
+    $(document).on('keyup', '#password', function(){
+
+        $(this).val() !== '' ? $(this).siblings('i').addClass('fa fa-eye-slash') : $(this).siblings('i').removeClass('fa fa-eye-slash');
+    });
+
+    $(document).on('click','.toggle-password',function(){
+        $(this).toggleClass('fa-eye-slash fa-eye');
+        var input = $('#password');
+        input.attr('type') == 'password' ? input.attr('type', 'text'):input.attr('type', 'password');
     });
 });

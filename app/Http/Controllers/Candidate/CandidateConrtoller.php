@@ -127,7 +127,8 @@ class CandidateConrtoller extends Controller
 
     // apply job
     public function jobApply(Request $request){
-        $getJobsData = $this->jobApply->with('savedJobs')->get();
+
+        $getJobsData = $this->jobApply->with('savedJobs')->orderBy('job_created_at','desc')->get();
         return view('job_apply',['jobs'=>$getJobsData??'']);
     }
 

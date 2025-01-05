@@ -26,6 +26,7 @@
                             <div class="mb-3">
                                 <label for="" class="mb-2">Password*</label>
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password">
+                                <i class="toggle-password" style="cursor: pointer; position: absolute; top: 64%; right: 60px;"></i>
                             </div> 
                             <div class="justify-content-between d-flex show_loader">
                             <button class="btn btn-primary mt-2" type="submit">Login</button>
