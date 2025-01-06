@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use DB;
 use Mail;
+use Cookie;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -103,6 +104,7 @@ class AuthController extends Controller
 
     // handle login request
     public function handleLoginrequest(Request $request){
+
         $rules = [
             'emailorusername'=>'required',
             'password'=>'required',
@@ -120,6 +122,16 @@ class AuthController extends Controller
             // $credential && Hash::check($request->get('password'), $credential->password) && Auth::loginUsingId($credential->id)
             $credential = $this->user->where('email', $request->emailorusername)->orWhere('username',$request->emailorusername)->first();
             if($credential && Hash::check($request->get('password'), $credential->password) && Auth::loginUsingId($credential->id)){
+
+                // set remember me cookie
+                if($request->has('remember_me')){
+                    \Cookie::queue('remember_emailorusername', $request->emailorusername);
+                    \Cookie::queue('remember_password', $request->get('password'));
+                }else{
+                    \Cookie::queue(\Cookie::forget('remember_emailorusername'));
+                    \Cookie::queue(\Cookie::forget('remember_password'));
+                }
+                
                 return response()->json([
                     'status'=>200,
                     'message'=>__('messages.login.success'),
